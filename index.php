@@ -46,11 +46,22 @@ $app->post('/', function ($request, $response)
 				// --------------------------------------------------------------- NOTICE ME...
 				
 				$inputMessage = $event['message']['text'];
-				$outputMessage = new TextMessageBuilder($inputMessage);
+
+				if ($inputMessage[0] == '/'){
+
+					$inputMessage = ltrim($inputMessage, '/');
+					$inputSplit = explode(' ', $inputMessage, 2);
+
+					if ( function_exists( $inputSplit[0] ) ){
+						$outputMessage = $inputSplit[0] ( $inputSplit[1]);
+					}else {
+						$outputMessage = new TextMessageBuilder('Gapaham woy');
+					}
 				
 				$result = $bot->replyMessage($event['replyToken'], $outputMessage);
 				return $result->getHTTPStatus() . ' ' . $result->getRawBody();
 				
+				}
 				// --------------------------------------------------------------- ...SENPAI!
 				
 			}
